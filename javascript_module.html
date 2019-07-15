@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Javascript module</title>
+	<script>
+		;(function () {
+			function foo1() {
+				console.log('foobar 1 Javascript module pattern examples');
+			}
+			foo1();
+		}());
+
+		!function () {
+			function foo2() {
+				console.log('foobar 2 Javascript module pattern examples');
+			}
+			foo2();
+		}();
+
+		+function (root) {
+			function foo3() {
+				console.log('foobar 3 Javascript module pattern examples');
+			}
+			foo3();
+		}(this);
+
+	</script>
+
+</head>
+<body>
+	
+</body>
+</html>

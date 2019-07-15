@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Ajax and Jquery</title>
+    <style>
+      .in {
+        color: green;
+        font-weight: bolder;
+      }
+      .out {
+        color: red;
+        font-weight: bolder;
+      }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.4.0.min.js"></script>
+    <script>
+      $.getJSON("employees.json", function(response) {
+        // console.log(response);
+        var html = "";
+        $.each(response, function(key, value) {
+          html += `<li class=${value.inoffice ? "in" : "out"} >${key} ${
+            value.name
+          }</li>`;
+        });
+        $(".employees").html(html);
+      });
+
+      $.get("missing.html", function(response) {
+        $(".error").html(response);
+        // console.log(response);
+      }).fail(function(jqXHR) {
+        $(".error").html(
+          jqXHR.status + "! File " + jqXHR.statusText + " error"
+        );
+      });
+      $(document).ready(function() {
+        $("form").submit(function(e) {
+          e.preventDefault();
+          // console.log('hi');
+          var url = $(this).attr("action");
+          var method = $(this).attr("method");
+          var formData = $(this).serialize();
+          // console.log(formData);
+          // $.post(url, formData, function (response) {
+          // 	$('.formDiv').html("<h1>Thank you data sent successfully!</h1>");
+          // });
+          //using jquery ajax method
+          $.ajax(url, {
+            data: formData,
+            type: method.toUpperCase(),
+            success: function(response) {
+              $(".formDiv").html("<h1>Thank you data sent successfully!</h1>");
+            }
+          });
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <h1>Employees in/out of office</h1>
+    <div class="employees"></div>
+    <!--
+    <h2>
+      jQuery shorthand method for ajax
+      $.load()/get()/getJSON()/getScript()/post() methods for making ajax
+      request and response take 3 paramater
+    </h2>
+    <h2>
+      1st url where to make request, 2nd data to send to the url/server and 3rd
+      the callback function ro run when response come back
+    </h2>
+
+    <h2>
+      .fail(jqXHR) used to print error message in case of error but not used
+      along with load()/ajax() method
+    </h2>
+
+    <h2>
+      jquery $.ajax() method is combination of all methods father of all
+      shorthand methods see eg above
+    </h2>
+-->
+    <h1 class="error"></h1>
+
+    <div class="formDiv">
+      <form action="/" method="post">
+        <input type="text" placeholder="Name" />
+        <input type="text" placeholder="Email" />
+        <input type="submit" />
+      </form>
+    </div>
+  </body>
+</html>

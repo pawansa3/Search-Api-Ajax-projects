@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+	
+	<title>Music Player</title>
+</head>
+<body>
+	
+	<div class="container">
+		<li class="list-group-item text-center" style="background: #944a4a;">
+			<h3 style="color: #fff;">Music Player</h3>
+		</li>
+		<ul class="list-group" id="playlist" style="margin-bottom: 0;"></ul>
+		<li class="list-group-item text-center" style="background: #944a4a;">
+			<button class="btn btn-default" id="play">Play</button>
+			<button class="btn btn-default" id="next">Next</button>
+			<button class="btn btn-default" id="stop">Stop</button>
+		</li>
+	</div>
+
+	<script>
+		//playlist.js => all function to control all song in a playlist
+		function Playlist() {
+			this.songs = [];
+			this.nowPlayingIndex = 0;
+		}
+		Playlist.prototype.add = function (song) {
+			this.songs.push(song);
+		}
+		Playlist.prototype.play = function () {
+			var currentSong = this.songs[this.nowPlayingIndex];
+			currentSong.play();
+		}
+		Playlist.prototype.stop = function () {
+			var currentSong = this.songs[this.nowPlayingIndex];
+			currentSong.stop();
+		}
+		Playlist.prototype.next = function () {
+			this.stop();
+			this.nowPlayingIndex++;
+			if (this.nowPlayingIndex === this.songs.length) {
+				this.nowPlayingIndex = 0;
+			}
+			this.play();
+		}
+		Playlist.prototype.renderInElement = function (list) {
+			list.innerHTML = "";
+			for (var i = 0; i < this.songs.length; i++) {
+				list.innerHTML += this.songs[i].toHTML();
+			}
+
+		}
+		
+		//song.js => all function to control a song that is currently playing
+		function Song(title, artist, duration) {
+			this.title = title;
+			this.artist = artist;
+			this.duration = duration;
+			this.isPlaying = false;
+		}
+		Song.prototype.play = function () {
+			this.isPlaying = true;
+		}
+		Song.prototype.stop = function () {
+			this.isPlaying = false;
+		}
+		Song.prototype.toHTML = function () {
+			var htmlString = `<li class="list-group-item ${this.isPlaying ? 'active' : ''}">`;
+			htmlString +=  `${this.title} - ${this.artist}<span class="badge">${this.duration}</span></li>`;
+			return htmlString;
+		}
+		
+		// app.js => all about adding song to the playlist
+		var playlist = new Playlist();
+		var hereComesTheSun = new Song("Here Comes The Sun", "The Beatles", "2:54");
+		var walkingOnSunshine = new Song("Walking on Sunshine", "Katrina & The Waves", "3:43");
+		
+		playlist.add(hereComesTheSun);
+		playlist.add(walkingOnSunshine);
+
+		var playlistElement = document.getElementById('playlist');
+		playlist.renderInElement(playlistElement);
+
+		var playButton = document.getElementById("play");
+		playButton.onclick = function () {
+			playlist.play();
+			playlist.renderInElement(playlistElement);
+		}
+		var nextButton = document.getElementById("next");
+		nextButton.onclick = function () {
+			playlist.next();
+			playlist.renderInElement(playlistElement);
+		}
+		var stopButton = document.getElementById("stop");
+		stopButton.onclick = function () {
+			playlist.stop();
+			playlist.renderInElement(playlistElement);
+		}
+
+	</script>
+</body>
+</html>

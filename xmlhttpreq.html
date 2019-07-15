@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Ajax Practice</title>
+    <style>
+      .in {
+        color: green;
+        font-weight: bolder;
+      }
+      .out {
+        color: red;
+        font-weight: bolder;
+      }
+    </style>
+    <script>
+      var xhr = new XMLHttpRequest();
+      xhr.onreadystatechange = function() {
+        // console.log(xhr.readyState);
+        // console.log(xhr.responseText);
+        if (xhr.readyState === 4 && xhr.status === 200) {
+          // console.log(xhr.responseText);
+          document.querySelector("#ajax").innerHTML = xhr.responseText;
+        }
+      };
+      xhr.open("GET", "load_ajax.html");
+      xhr.send();
+
+      var xhr1 = new XMLHttpRequest();
+      xhr1.onreadystatechange = function() {
+        if (xhr1.readyState === 4 && xhr1.status === 200) {
+          var html = "<ul>";
+          var employees = JSON.parse(xhr1.responseText);
+          for (var i = 0; i < employees.length; i++) {
+            if (employees[i].inoffice)
+              html += `<li class="in">${employees[i].name}</li>`;
+            else html += `<li class="out">${employees[i].name}</li>`;
+          }
+          html += "</ul>";
+          document.querySelector(".employees").innerHTML = html;
+        }
+      };
+      xhr1.open("GET", "employees.json");
+      xhr1.send();
+    </script>
+  </head>
+  <body>
+    <!--
+	<h1>AJAX Examples</h1>
+	<ul>
+		<li>Create the XMLHttpRequest object</li>
+		<li>Define a callback function to run when onreadystatechange</li>
+		<li>Open the request specifing get/post request and url to request at</li>
+		<li>Send the request</li>
+	</ul>
+
+	<p>Ajax Object Properties : onreadystatechange(Defines a function to be called when the readyState property changes ), readyState(0/1/2/3/4), status(200: "OK", 403: "Forbidden", 404: "Page not found"), statusText(Returns the status-text (e.g. "OK" or "Not Found")), {responseText, responseXML}=>(get the response data as a string/xml)</p>
+	<p>Ajax Object methods: open(), send(), getResponseHeader(), getAllResponseHeaders()=> {Returns all the header information from the server resource}</p>
+
+	<p>url-encode-decode: post/get request</p>
+	<p>AJAX response format xml/json</p>
+	<ul>
+		<li>Ajax security limitations: cross browser origin policy i.e. 1. ajax will not work in file:/// protocol</li>
+		<li>can't make request to files on another server/domain/running on different ports like http-https, myserver.com and db.myserver.com is not allowed as well</li>
+		<li>solution to this is: Web Proxy use php, backend lang to make file/data request to another server/domain and get the data to reload into your own domain</li>
+		<li>JSONP - JSON with padding (using script tags we can load jsfile from another server/domain this is how CDN website works)</li>
+		<li>CORS- cross-origin resource sharing (using <Access-Control-Allow-Origin:http://www.myserver.com> in header will allow the domain access resources for myserver domain)</li>
+	</ul>
+
+    <p>
+      JSON object {"name":"jim", "phone": 9876543210} use only double quote
+      ("")single quote won't work('')
+    </p>
+	-->
+
+    <div id="ajax"></div>
+
+    <div class="employees"></div>
+  </body>
+</html>
