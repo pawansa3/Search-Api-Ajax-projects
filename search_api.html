@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Video & Image Search</title>
+    <style>
+      .albums {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        grid-gap: 20px;
+      }
+
+      .album {
+        background: rgba(255, 255, 255, 0.2);
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        display: grid;
+        grid-gap: 10px;
+        align-items: center;
+        color: white;
+        font-weight: 100;
+      }
+
+      .album__artwork {
+        width: 100%;
+      }
+
+      form {
+        display: grid;
+        grid-template-columns: 4fr 1fr 1fr;
+        grid-gap: 5px;
+        margin-bottom: 10px;
+      }
+
+      #search {
+        padding: 10px;
+      }
+      h1 {
+        text-align: center;
+      }
+
+      #submit {
+        color: #fff;
+        background-color: #337ab7;
+        border-color: #2e6da4;
+        border: 1px solid transparent;
+        cursor: pointer;
+        font-size: 15px;
+        font-weight: 400;
+      }
+      #submit:hover {
+        background-color: #286090;
+        border-color: #204d74;
+      }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.4.0.min.js"></script>
+  </head>
+  <body>
+    <h1>Public API based Images & Videos Search</h1>
+    <form action="/photo_api.html" method="get">
+      <input type="text" placeholder="Search videos & images" id="search" />
+      <select name="category" id="category">
+        <option value="video">Video</option>
+        <option value="images" selected>Images</option>
+      </select>
+      <input type="submit" value="Search" id="submit" />
+    </form>
+
+    <div class="albums"></div>
+
+    <script>
+      $("form").submit(function(e) {
+        e.preventDefault();
+        var formData = $("#search").val();
+        var formCat = $("#category").val();
+        if (formCat === "images") {
+          var url = `https://pixabay.com/api/?key=12176114-87de00e5caa64c84a361817a2&q=${formData}`;
+        } else {
+          var url = `https://pixabay.com/api/videos/?key=12176114-87de00e5caa64c84a361817a2&q=${formData}`;
+        }
+        var htmlContent = "";
+        $.getJSON(url, function(response) {
+          var res = response.hits;
+          $.each(res, function(index, value) {
+            htmlContent += '<div class="album">';
+            formCat === "images"
+              ? (htmlContent += `<img src=${
+                  value.largeImageURL
+                } class="album__artwork" />`)
+              : (htmlContent += `<video width="300" controls class="album__artwork"><source src=${
+                  value.videos.small.url
+                }></video>`);
+            htmlContent += "</div>";
+          });
+          $(".albums").html(htmlContent);
+        });
+      });
+    </script>
+  </body>
+</html>
